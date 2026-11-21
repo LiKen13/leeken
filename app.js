@@ -1,7 +1,7 @@
 const $=id=>document.getElementById(id), esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const normalize=v=>v.toLocaleLowerCase('ru').replace(/ё/g,'е').replace(/[^а-яa-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
-const link=s=>'<a target="_blank" rel="noopener" href="'+esc(s.url)+'">'+esc(s.source)+'</a>';
-const caseLink=s=>s.page&&!s.url.startsWith('https://neversleep-alfa-atlas.honeyforum65.chatgpt.site/case.pdf')?' · <a target="_blank" rel="noopener" href="https://neversleep-alfa-atlas.honeyforum65.chatgpt.site/case.pdf#page='+s.page+'">Кейс, стр. '+s.page+'</a>':'';
+const link=s=>'<a rel="noopener" href="'+esc(s.url)+'">'+esc(s.source)+'</a>';
+const caseLink=s=>s.page&&!s.url.startsWith('https://neversleep-alfa-atlas.honeyforum65.chatgpt.site/case.pdf')?' · <a rel="noopener" href="https://neversleep-alfa-atlas.honeyforum65.chatgpt.site/case.pdf#page='+s.page+'">Кейс, стр. '+s.page+'</a>':'';
 const tags=s=>'<div class="tags"><span class="tag">'+s.group+'</span><span>'+s.status+'</span>'+(s.restricted?'<span class="tag restricted">Исключение кейса</span>':'')+'</div>';
 const ids=['need','action','result'],labels=['Задача','Действие','Результат'];
 let selected=null;
@@ -15,3 +15,4 @@ function init(){for(const k of ['group','status']){[...new Set(catalog.map(s=>s[
 try{const draft=JSON.parse(localStorage.getItem('neversleep.idea')||'{}');ids.forEach(k=>{if(typeof draft[k]==='string')$(k).value=draft[k]})}catch{}
 $('idea').oninput=()=>{try{localStorage.setItem('neversleep.idea',JSON.stringify(Object.fromEntries(ids.map(k=>[k,$(k).value]))))}catch{}$('matches').innerHTML='';$('hint').textContent='Нажмите «Найти похожие сценарии», чтобы обновить подбор.';if(selected!==null)compare(selected)};$('idea').onsubmit=e=>{e.preventDefault();recommend()};$('close').onclick=()=>$('detail').close();document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.tab)showTab(b.dataset.tab);else if('open'in b.dataset)card(Number(b.dataset.open));else if('pick'in b.dataset){$('detail').close();showTab('compare');compare(Number(b.dataset.pick))}else if('match'in b.dataset)compare(Number(b.dataset.match),true);else if(b.id==='reset'){$('q').value=$('status').value=$('group').value='';$('restrict').checked=false;list()}});window.addEventListener('popstate',()=>showTab(location.hash.slice(1)));list();showTab(location.hash.slice(1))}
 init();
+
